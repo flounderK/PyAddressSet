@@ -49,9 +49,6 @@ class AddressRangeIterator(Iterator[AddressRange]):
 class AddressIterator(Iterator[Address]):
     pass
 
-class AddressSet:
-    def add(self, *args):
-        pass
 
 class AddressSetView(ABC):
     @abstractmethod
@@ -91,23 +88,23 @@ class AddressSetView(ABC):
         pass
 
     @abstractmethod
-    def intersect(self, view: 'AddressSetView') -> AddressSet:
+    def intersect(self, view: 'AddressSetView') -> 'AddressSet':
         pass
 
     @abstractmethod
-    def intersect_range(self, start: Address, end: Address) -> AddressSet:
+    def intersect_range(self, start: Address, end: Address) -> 'AddressSet':
         pass
 
     @abstractmethod
-    def union(self, addr_set: 'AddressSetView') -> AddressSet:
+    def union(self, addr_set: 'AddressSetView') -> 'AddressSet':
         pass
 
     @abstractmethod
-    def subtract(self, addr_set: 'AddressSetView') -> AddressSet:
+    def subtract(self, addr_set: 'AddressSetView') -> 'AddressSet':
         pass
 
     @abstractmethod
-    def xor(self, addr_set: 'AddressSetView') -> AddressSet:
+    def xor(self, addr_set: 'AddressSetView') -> 'AddressSet':
         pass
 
     @abstractmethod
@@ -143,27 +140,11 @@ class AddressSetView(ABC):
 
     @staticmethod
     def trim_start(set_: 'AddressSetView', addr: Address) -> 'AddressSetView':
-        trimmed_set = AddressSet()
-        for range_ in set_.get_address_ranges():
-            min_addr = range_.get_min_address()
-            max_addr = range_.get_max_address()
-            if min_addr.compare_to(addr) > 0:
-                trimmed_set.add(range_)
-            elif max_addr.compare_to(addr) > 0:
-                trimmed_set.add(addr.next(), max_addr)
-        return trimmed_set
+        pass
 
     @staticmethod
     def trim_end(set_: 'AddressSetView', addr: Address) -> 'AddressSetView':
-        trimmed_set = AddressSet()
-        for range_ in set_.get_address_ranges():
-            min_addr = range_.get_min_address()
-            max_addr = range_.get_max_address()
-            if max_addr.compare_to(addr) < 0:
-                trimmed_set.add(range_)
-            elif min_addr.compare_to(addr) < 0:
-                trimmed_set.add(min_addr, addr.previous())
-        return trimmed_set
+        pass
 
     def __iter__(self) -> Iterator[AddressRange]:
         return self.get_address_ranges()
@@ -407,3 +388,27 @@ class AddressSet(AddressSetView):
         for r in other.get_address_ranges():
             result.add(r)
         return result
+
+    @staticmethod
+    def trim_start(set_: 'AddressSetView', addr: Address) -> 'AddressSetView':
+        trimmed_set = AddressSet()
+        for range_ in set_.get_address_ranges():
+            min_addr = range_.get_min_address()
+            max_addr = range_.get_max_address()
+            if min_addr.compare_to(addr) > 0:
+                trimmed_set.add(range_)
+            elif max_addr.compare_to(addr) > 0:
+                trimmed_set.add(addr.next(), max_addr)
+        return trimmed_set
+
+    @staticmethod
+    def trim_end(set_: 'AddressSetView', addr: Address) -> 'AddressSetView':
+        trimmed_set = AddressSet()
+        for range_ in set_.get_address_ranges():
+            min_addr = range_.get_min_address()
+            max_addr = range_.get_max_address()
+            if max_addr.compare_to(addr) < 0:
+                trimmed_set.add(range_)
+            elif min_addr.compare_to(addr) < 0:
+                trimmed_set.add(min_addr, addr.previous())
+        return trimmed_set
