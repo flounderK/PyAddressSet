@@ -19,18 +19,6 @@ class Address:
     def previous(self) -> 'Address':
         pass
 
-class AddressRange:
-    def get_min_address(self) -> Address:
-        pass
-
-    def get_max_address(self) -> Address:
-        pass
-
-    def contains(self, addr: Address) -> bool:
-        pass
-
-    def get_length(self) -> int:
-        pass
 
 class AddressRangeIterator(Iterator[AddressRange]):
     pass
@@ -156,7 +144,7 @@ class AddressSetView(ABC):
 
     def __iter__(self) -> Iterator[AddressRange]:
         return self.get_address_ranges()
-        
+
 
 # === Core Domain Classes ===
 class Address:
@@ -209,21 +197,6 @@ class AddressRange:
 
     def __repr__(self):
         return f"AddressRange({self.start}, {self.end})"
-
-
-# === AddressSetView Interface ===
-class AddressSetView(ABC):
-    @abstractmethod
-    def contains(self, *args) -> bool:
-        pass
-
-    @abstractmethod
-    def get_address_ranges(self) -> Iterator[AddressRange]:
-        pass
-
-    @abstractmethod
-    def get_num_addresses(self) -> int:
-        pass
 
 
 # === Red-Black Tree Node ===
