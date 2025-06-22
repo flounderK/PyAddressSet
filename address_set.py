@@ -2,9 +2,7 @@
 # For static analysis tooling, including custom red-black tree
 
 from abc import ABC, abstractmethod
-from typing import Optional, Iterator, List
-from abc import ABC, abstractmethod
-from typing import Iterable, Iterator, Optional, Generator
+from typing import Iterable, Iterator, Optional, Generator, List
 
 class Address:
     def compare_to(self, other: 'Address') -> int:
