@@ -4,18 +4,34 @@
 from abc import ABC, abstractmethod
 from typing import Iterable, Iterator, Optional, Generator, List
 
+# === Core Domain Classes ===
 class Address:
-    def compare_to(self, other: 'Address') -> int:
-        pass
+    def __init__(self, offset: int):
+        self.offset = offset
 
-    def subtract(self, other: 'Address') -> int:
-        pass
+    def __lt__(self, other: 'Address') -> bool:
+        return self.offset < other.offset
+
+    def __le__(self, other: 'Address') -> bool:
+        return self.offset <= other.offset
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Address) and self.offset == other.offset
+
+    def __hash__(self):
+        return hash(self.offset)
 
     def next(self) -> 'Address':
-        pass
+        return Address(self.offset + 1)
 
     def previous(self) -> 'Address':
-        pass
+        return Address(self.offset - 1)
+
+    def subtract(self, other: 'Address') -> int:
+        return self.offset - other.offset
+
+    def __repr__(self):
+        return f"Address({self.offset})"
 
 
 class AddressRange:
@@ -148,57 +164,6 @@ class AddressSetView(ABC):
         return self.get_address_ranges()
 
 
-# === Core Domain Classes ===
-class Address:
-    def __init__(self, offset: int):
-        self.offset = offset
-
-    def __lt__(self, other: 'Address') -> bool:
-        return self.offset < other.offset
-
-    def __le__(self, other: 'Address') -> bool:
-        return self.offset <= other.offset
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, Address) and self.offset == other.offset
-
-    def __hash__(self):
-        return hash(self.offset)
-
-    def next(self) -> 'Address':
-        return Address(self.offset + 1)
-
-    def previous(self) -> 'Address':
-        return Address(self.offset - 1)
-
-    def subtract(self, other: 'Address') -> int:
-        return self.offset - other.offset
-
-    def __repr__(self):
-        return f"Address({self.offset})"
-
-
-class AddressRange:
-    def __init__(self, start: Address, end: Address):
-        if end < start:
-            raise ValueError("End address must not be less than start address")
-        self.start = start
-        self.end = end
-
-    def contains(self, addr: Address) -> bool:
-        return self.start <= addr <= self.end
-
-    def get_min_address(self) -> Address:
-        return self.start
-
-    def get_max_address(self) -> Address:
-        return self.end
-
-    def get_length(self) -> int:
-        return self.end.offset - self.start.offset + 1
-
-    def __repr__(self):
-        return f"AddressRange({self.start}, {self.end})"
 
 
 # === Red-Black Tree Node ===
