@@ -20,6 +20,29 @@ class Address:
         pass
 
 
+class AddressRange:
+    def __init__(self, start: Address, end: Address):
+        if end < start:
+            raise ValueError("End address must not be less than start address")
+        self.start = start
+        self.end = end
+
+    def contains(self, addr: Address) -> bool:
+        return self.start <= addr <= self.end
+
+    def get_min_address(self) -> Address:
+        return self.start
+
+    def get_max_address(self) -> Address:
+        return self.end
+
+    def get_length(self) -> int:
+        return self.end.offset - self.start.offset + 1
+
+    def __repr__(self):
+        return f"AddressRange({self.start}, {self.end})"
+
+
 class AddressRangeIterator(Iterator[AddressRange]):
     pass
 
